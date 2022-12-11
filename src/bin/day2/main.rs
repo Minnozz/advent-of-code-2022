@@ -7,22 +7,32 @@
 // Z, 2: Win (6 pt)
 
 fn main() {
-    let lines = include_str!("input.txt").lines();
+    let lines = include_str!("input.txt");
 
     // Part 1
     let total_score = lines
+        .lines()
         .map(|line| {
             let chars = line.chars().collect::<Vec<_>>();
             let their_move = chars[0] as i32 - 'A' as i32;
             let our_move = chars[2] as i32 - 'X' as i32;
-            let outcome = match (their_move - our_move + 3) % 3 {
-                0 => 3, // Draw
-                1 => 0, // Loss
-                2 => 6, // Win
-                _ => panic!("invalid line: {}", line),
-            };
-            our_move + 1 + outcome
+            let outcome = (our_move - their_move + 4) % 3;
+            return (our_move + 1) + (outcome * 3);
         })
         .sum::<i32>();
-    println!("Total score: {}", total_score);
+    println!("Total score by playing moves: {}", total_score);
+
+    // Part 2
+    let total_score = lines
+        .lines()
+        .map(|line| {
+            let chars = line.chars().collect::<Vec<_>>();
+            let their_move = chars[0] as i32 - 'A' as i32;
+            let outcome = chars[2] as i32 - 'X' as i32;
+            let our_move = (outcome + their_move + 2) % 3;
+            assert!(outcome == (our_move - their_move + 4) % 3);
+            return (our_move + 1) + (outcome * 3);
+        })
+        .sum::<i32>();
+    println!("Total score by playing to outcome: {}", total_score);
 }
